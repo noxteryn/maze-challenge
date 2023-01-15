@@ -41,8 +41,9 @@ public class Window extends JFrame implements ActionListener
 		this.setVisible(true);
 	}
 	
-	public void actionPerformed(ActionEvent event)
+	public void actionPerformed(ActionEvent event) // Controls the actions in the Window.
 	{
+		// File -> New Maze -> From File
 		if (event.getSource() == fromFile)
 		{
 			final JFileChooser chooser = new JFileChooser();
@@ -55,31 +56,43 @@ public class Window extends JFrame implements ActionListener
 				solve.setEnabled(true);
 			}
 		}
+		// Menu: File -> New Maze -> From Random Generation
 		else if (event.getSource() == fromRandom)
 		{
-			JOptionPane.showMessageDialog(this, "This randomly generates a new maze.");
+			this.maze = new Maze((int)(Math.random()));
+			this.player = new Player(maze.getStartX(), maze.getStartY());
+			solve.setEnabled(true);
 		}
+		// Menu: File -> Exit
 		else if (event.getSource() == exit)
 		{
 			System.exit(0);
 		}
+		// Menu: Help -> About
 		else if (event.getSource() == about)
 		{
 			JOptionPane.showMessageDialog(this, "Created by noxteryn, January 2023.");
 		}
+		// Button: Solve
 		else if (event.getSource() == solve)
 		{
-			JOptionPane.showMessageDialog(this, "This solves the maze.");
-			new Solver(maze, player);
+			if (maze.isSolvable() == true)
+			{
+				new Solver(maze, player);
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this, "Maze is unsolvable.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
+		// Button: Reset
 		else if (event.getSource() == reset)
 		{
 			JOptionPane.showMessageDialog(this, "This resets the maze.");
 		}
-		
 	}
 	
-	private void buildMenu()
+	private void buildMenu() // Builds the menu bar.
 	{
         menu.add(fileMenu);
         fileMenu.add(newMaze);
@@ -95,12 +108,12 @@ public class Window extends JFrame implements ActionListener
         this.getContentPane().add(BorderLayout.NORTH, menu);
 	}
 	
-	private void buildPanel()
+	private void buildPanel() // Builds the central panel.
 	{
         this.getContentPane().add(BorderLayout.CENTER, panel);
 	}
 	
-	private void buildControl()
+	private void buildControl() // Builds the control panel at the bottom.
 	{
         control.add(solve);
         solve.setEnabled(false);
