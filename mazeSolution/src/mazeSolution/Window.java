@@ -15,18 +15,20 @@ public class Window extends JFrame implements ActionListener
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	JMenuBar menu = new JMenuBar();
-	JMenu fileMenu = new JMenu("File");
-	JMenu newMaze = new JMenu("New Maze");
-	JMenuItem fromFile = new JMenuItem("From txt File");
-	JMenuItem fromRandom = new JMenuItem("From Random Generation");
-	JMenuItem exit = new JMenuItem("Exit");
-	JMenu helpMenu = new JMenu("Help");
-	JMenuItem about = new JMenuItem("About...");
-	JPanel panel = new JPanel();
-	JPanel control = new JPanel();
-	JButton solve = new JButton("Solve Maze");
-	JButton reset = new JButton("Reset Maze");
+	private JMenuBar menu = new JMenuBar();
+	private JMenu fileMenu = new JMenu("File");
+	private JMenu newMaze = new JMenu("New Maze");
+	private JMenuItem fromFile = new JMenuItem("From txt File");
+	private JMenuItem fromRandom = new JMenuItem("From Random Generation");
+	private JMenuItem exit = new JMenuItem("Exit");
+	private JMenu helpMenu = new JMenu("Help");
+	private JMenuItem about = new JMenuItem("About...");
+	private JPanel panel = new JPanel();
+	private JPanel control = new JPanel();
+	private JButton solve = new JButton("Solve Maze");
+	private JButton reset = new JButton("Reset Maze");
+	Maze maze;
+	Player player;
 	
 	public Window()
 	{
@@ -43,15 +45,14 @@ public class Window extends JFrame implements ActionListener
 	{
 		if (event.getSource() == fromFile)
 		{
-			JOptionPane.showMessageDialog(this, "This opens a maze from a txt file.");
 			final JFileChooser chooser = new JFileChooser();
 			int returnVal = chooser.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION)
 			{
 				File file = chooser.getSelectedFile();
-				Maze maze = new Maze(file);
-				Player player = new Player(maze.getStartX(), maze.getStartY());
-				maze.printStats();
+				this.maze = new Maze(file);
+				this.player = new Player(maze.getStartX(), maze.getStartY());
+				solve.setEnabled(true);
 			}
 		}
 		else if (event.getSource() == fromRandom)
@@ -69,6 +70,7 @@ public class Window extends JFrame implements ActionListener
 		else if (event.getSource() == solve)
 		{
 			JOptionPane.showMessageDialog(this, "This solves the maze.");
+			new Solver(maze, player);
 		}
 		else if (event.getSource() == reset)
 		{
@@ -101,8 +103,10 @@ public class Window extends JFrame implements ActionListener
 	private void buildControl()
 	{
         control.add(solve);
+        solve.setEnabled(false);
         solve.addActionListener(this);
         control.add(reset);
+        reset.setEnabled(false);
         reset.addActionListener(this);
         this.getContentPane().add(BorderLayout.SOUTH, control);
 	}

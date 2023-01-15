@@ -1,30 +1,11 @@
 package mazeSolution;
 
 public class Solver
-{
-	Maze maze;
-	Player player;
-	
-	public Solver()
+{	
+	public Solver(Maze maze, Player player)
 	{
-		Maze maze = new Maze();
-		Player player = new Player(maze.getStartX(), maze.getStartY());
 		maze.printStats();
-		if (maze.isSolvable() == true)
-		{
-			solveRandom(maze, player);
-			System.out.println("The Goal has been reached! The path of Player was:");
-			player.printPath();
-		}
-		else
-		{
-			System.out.println("Error: Maze is not solvable.");
-		}
-	}
-	
-	private void leftWall(Maze maze, Player player)
-	{
-		
+		solveRandom(maze, player);
 	}
 	
 	private void solveRandom(Maze maze, Player player) // The Player moves randomly until it finds the Goal.
