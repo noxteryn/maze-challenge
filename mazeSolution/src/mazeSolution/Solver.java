@@ -6,6 +6,8 @@ public class Solver
 	{
 		maze.printStats();
 		solveRandom(maze, player);
+		System.out.println("The Goal has been reached! The path of Player was:");
+		player.printPath();
 	}
 	
 	private void solveRandom(Maze maze, Player player) // The Player moves randomly until it finds the Goal.
