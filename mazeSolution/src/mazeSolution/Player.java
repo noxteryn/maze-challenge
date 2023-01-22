@@ -7,8 +7,8 @@ import java.util.stream.IntStream;
 
 public class Player
 {
-	private Position position;
-	private List<int[]> path;
+	private static Position position;
+	private static List<int[]> path;
 
 	public Player(int x, int y) // Constructor for the Player.
 	{

@@ -5,16 +5,11 @@ import java.awt.event.*;
 import java.io.File;
 import javax.swing.*;
 
-import mazeSolution.Window;
-
-public class Window extends JFrame implements ActionListener
+public class MainWindow extends JFrame implements ActionListener
 {
-	
-	/**
-	 * No idea what this is. IDE wanted me to add this.
-	 */
+	//No idea what this is. IDE wanted me to add this.
 	private static final long serialVersionUID = 1L;
-	
+		
 	private JMenuBar menu = new JMenuBar();
 	private JMenu fileMenu = new JMenu("File");
 	private JMenu newMaze = new JMenu("New Maze");
@@ -23,21 +18,26 @@ public class Window extends JFrame implements ActionListener
 	private JMenuItem exit = new JMenuItem("Exit");
 	private JMenu helpMenu = new JMenu("Help");
 	private JMenuItem about = new JMenuItem("About...");
-	private JPanel panel = new JPanel();
+	private JPanel cards = new JPanel(new CardLayout());
+	private JPanel emptyPanel = new JPanel();
+	private JPanel panel;
+	private JPanel solution;
 	private JPanel control = new JPanel();
 	private JButton solve = new JButton("Solve Maze");
 	private JButton reset = new JButton("Reset Maze");
 	Maze maze;
 	Player player;
 	
-	public Window()
+	public MainWindow()
 	{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Maze Challenge");
 		this.setSize(800, 600);
+		this.setResizable(false);
 		buildMenu();
 		buildPanel();
 		buildControl();
+		//this.pack();
 		this.setVisible(true);
 	}
 	
@@ -53,14 +53,16 @@ public class Window extends JFrame implements ActionListener
 				File file = chooser.getSelectedFile();
 				this.maze = new Maze(file);
 				this.player = new Player(maze.getStartX(), maze.getStartY());
+				drawMaze();
 				solve.setEnabled(true);
 			}
 		}
 		// Menu: File -> New Maze -> From Random Generation
 		else if (event.getSource() == fromRandom)
 		{
-			this.maze = new Maze((int)(Math.random()));
+			this.maze = new Maze((int)(Math.random() * 100));
 			this.player = new Player(maze.getStartX(), maze.getStartY());
+			drawMaze();
 			solve.setEnabled(true);
 		}
 		// Menu: File -> Exit
@@ -79,6 +81,7 @@ public class Window extends JFrame implements ActionListener
 			if (maze.isSolvable() == true)
 			{
 				new Solver(maze, player);
+				showSolution();
 			}
 			else
 			{
@@ -89,7 +92,24 @@ public class Window extends JFrame implements ActionListener
 		else if (event.getSource() == reset)
 		{
 			JOptionPane.showMessageDialog(this, "This resets the maze.");
+			drawMaze();
 		}
+	}
+	
+	private void showSolution()
+	{
+		this.solution = new GridSolution(maze, player);
+		cards.add(solution, "Solution");
+		CardLayout layout = (CardLayout)(cards.getLayout());
+		layout.show(cards, "Solution");
+	}
+	
+	private void drawMaze()
+	{
+		this.panel = new Grid(maze);
+		cards.add(panel, "Panel");
+		CardLayout layout = (CardLayout)(cards.getLayout());
+		layout.show(cards, "Panel");
 	}
 	
 	private void buildMenu() // Builds the menu bar.
@@ -110,7 +130,8 @@ public class Window extends JFrame implements ActionListener
 	
 	private void buildPanel() // Builds the central panel.
 	{
-        this.getContentPane().add(BorderLayout.CENTER, panel);
+		cards.add(emptyPanel, "Empty");
+        this.getContentPane().add(BorderLayout.CENTER, cards);
 	}
 	
 	private void buildControl() // Builds the control panel at the bottom.
